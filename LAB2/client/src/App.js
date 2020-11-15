@@ -1,69 +1,36 @@
-import React, { Component } from 'react';
-import './App.css';
-import { NavLink, Route, Switch, Redirect } from 'react-router-dom';
+import React from 'react';
 import Clients from './containers/Clients';
 import Passport from './containers/Passport';
+import Tab from 'react-bootstrap/Tab';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Nav from 'react-bootstrap/Nav';
 
-export default class App extends Component {
-    render() {
-        return (
-            <div className="container">
-                <ul className="nav d-flex justify-content-around px-5 mt-4">
-                    <li className="nav-item ">
-                        <NavLink
-                            className="nav-link btn btn-primary"
-                            to="/passport">
-                            Passports
-                        </NavLink>
-                    </li>
-                    <li className="nav-item">
-                        <NavLink
-                            className="nav-link btn btn-primary"
-                            to="/clients">
-                            Clients
-                        </NavLink>
-                    </li>
-                    <li className="nav-item">
-                        <NavLink
-                            className="nav-link btn btn-primary"
-                            to="/orders">
-                            Orders
-                        </NavLink>
-                    </li>
-                    <li className="nav-item">
-                        <NavLink
-                            className="nav-link btn btn-primary"
-                            to="/products">
-                            Products
-                        </NavLink>
-                    </li>
-                    <li className="nav-item">
-                        <NavLink
-                            className="nav-link btn btn-primary"
-                            to="/orders_products">
-                            Order_Products
-                        </NavLink>
-                    </li>
-                    <li className="nav-item">
-                        <NavLink
-                            className="nav-link btn btn-primary"
-                            to="/reviews">
-                            Reviews
-                        </NavLink>
-                    </li>
-                </ul>
+const App = () => (
+    <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+        <Row>
+            <Col sm={2}>
+                <Nav variant="pills" className="flex-column">
+                    <Nav.Item>
+                        <Nav.Link eventKey="first">Passport</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link eventKey="second">Clients</Nav.Link>
+                    </Nav.Item>
+                </Nav>
+            </Col>
+            <Col sm={9}>
+                <Tab.Content>
+                    <Tab.Pane eventKey="first">
+                        <Passport />
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="second">
+                        <Clients />
+                    </Tab.Pane>
+                </Tab.Content>
+            </Col>
+        </Row>
+    </Tab.Container>
+);
 
-                <Switch>
-                    <Route path={'/passport'} exact component={Passport} />
-                    <Route path={'/clients'} exact component={Clients} />
-                    <Route path={'/orders'} exact component={''} />
-                    <Route path={'/products'} exact component={''} />
-                    <Route path={'/orders_products'} exact component={''} />
-                    <Route path={'/reviews'} exact component={''} />
-
-                    <Redirect to={'/'} />
-                </Switch>
-            </div>
-        );
-    }
-}
+export default App;

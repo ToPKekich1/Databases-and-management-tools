@@ -1,15 +1,17 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 
 import EditPassport from './EditPassport';
 
-const ListPassport = () => {
+const ListPassport = ({ name, surname, number, isSearch }) => {
     const [passports, setPassports] = useState([]);
 
     //delete todo function
 
     const deletePassport = async id => {
         try {
-            await fetch(`http://localhost:5001/passport/${id}`, {
+            await fetch(`http://localhost:5000/passports/${id}`, {
                 method: 'DELETE'
             });
 
@@ -23,24 +25,51 @@ const ListPassport = () => {
 
     const getPassports = async () => {
         try {
-            const response = await fetch('http://localhost:5001/passport');
+            const response = await fetch('http://localhost:5000/passports');
             const jsonData = await response.json();
+            if (!jsonData) {
+                setPassports([]);
+            } else {
+                setPassports(jsonData);
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
 
-            setPassports(jsonData);
+    const findPassports = async () => {
+        try {
+            const body = { name, surname, number };
+            const res = await fetch('http://localhost:5000/passports/find', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const jsonData = await res.json();
+            if (!jsonData) {
+                setPassports([]);
+            } else {
+                setPassports(jsonData);
+            }
         } catch (error) {
             console.error(error.message);
         }
     };
 
     useEffect(() => {
-        getPassports();
+        if (!isSearch) {
+            getPassports();
+        } else {
+            findPassports();
+        }
     }, []);
 
     return (
-        <Fragment>
-            <table className="table table-striped table-bordered mt-3 ">
+        <>
+            <Table striped bordered hover>
                 <thead>
                     <tr>
+                        <th scope="col">PassportId</th>
                         <th scope="col">Name</th>
                         <th scope="col">Surname</th>
                         <th scope="col">Number</th>
@@ -51,6 +80,7 @@ const ListPassport = () => {
                 <tbody>
                     {passports.map(passport => (
                         <tr key={passport.passport_id}>
+                            <td>{passport.passport_id}</td>
                             <td>{passport.name}</td>
                             <td>{passport.surname}</td>
                             <td>{passport.number}</td>
@@ -58,46 +88,19 @@ const ListPassport = () => {
                                 <EditPassport passport={passport} />
                             </td>
                             <td>
-                                <button
-                                    className="btn btn-danger "
+                                <Button
+                                    variant="danger"
                                     onClick={() =>
                                         deletePassport(passport.passport_id)
                                     }>
                                     Delete
-                                </button>
+                                </Button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
-            </table>
-            {/* <table className="table mt-5 text-center">
-                <thead>
-                    <tr>
-                        <th scope="col">Description</th>
-                        <th scope="col">Edit</th>
-                        <th scope="col">Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {todos.map(todo => (
-                        <tr key={todo.todo_id}>
-                            <td>{todo.description}</td>
-                            <td>
-                                {' '}
-                                <EditTodo todo={todo} />
-                            </td>
-                            <td>
-                                <button
-                                    className="btn btn-danger"
-                                    onClick={() => deleteTodo(todo.todo_id)}>
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table> */}
-        </Fragment>
+            </Table>
+        </>
     );
 };
 

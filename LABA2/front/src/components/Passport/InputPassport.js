@@ -16,13 +16,17 @@ const InputPassport = () => {
 
         try {
             const body = { name, surname, number };
-            await fetch('http://localhost:5001/passport', {
+            const res = await fetch('http://localhost:5000/passports', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
 
-            window.location = '/passport';
+            if (res.status === 403) {
+                alert('Error');
+            } else {
+                window.location = '/';
+            }
         } catch (error) {
             console.error(error);
         }
@@ -30,6 +34,7 @@ const InputPassport = () => {
 
     return (
         <Card border="dark" bg="light" className={classes.Card}>
+            <h1>Add new passport here</h1>
             <Form border="primary" onSubmit={onSubmitForm}>
                 <Form.Row>
                     <Form.Group as={Col} controlId="formGridName">
@@ -40,6 +45,7 @@ const InputPassport = () => {
                             placeholder="Name"
                             value={name}
                             onChange={event => setName(event.target.value)}
+                            required
                         />
                     </Form.Group>
 
@@ -51,17 +57,19 @@ const InputPassport = () => {
                             placeholder="Surname"
                             value={surname}
                             onChange={event => setSurname(event.target.value)}
+                            required
                         />
                     </Form.Group>
 
                     <Form.Group as={Col} controlId="formGridNumber">
                         <Form.Label>Number</Form.Label>
                         <Form.Control
-                            maxLength="13"
+                            maxLength="8"
                             type="text"
                             placeholder="Number"
                             value={number}
                             onChange={event => setNumber(event.target.value)}
+                            required
                         />
                     </Form.Group>
                 </Form.Row>

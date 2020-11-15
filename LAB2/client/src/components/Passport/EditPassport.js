@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 
 const EditPassport = ({ passport }) => {
     const [name, setName] = useState(passport.name);
@@ -12,7 +12,7 @@ const EditPassport = ({ passport }) => {
         try {
             const body = { name, surname, number };
             const response = await fetch(
-                `http://localhost:5000/passport/${passport.passport_id}`,
+                `http://localhost:5001/passport/${passport.passport_id}`,
                 {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -22,15 +22,16 @@ const EditPassport = ({ passport }) => {
 
             if (response.status === 400) {
                 setNumber(passport.number);
+            } else {
+                window.location = '/passport';
             }
-            // window.location = '/passport';
         } catch (error) {
             console.error(error.message);
         }
     };
 
     return (
-        <Fragment>
+        <>
             <button
                 type="button"
                 className="btn btn-warning"
@@ -116,7 +117,7 @@ const EditPassport = ({ passport }) => {
                     </div>
                 </div>
             </div>
-        </Fragment>
+        </>
     );
 };
 
